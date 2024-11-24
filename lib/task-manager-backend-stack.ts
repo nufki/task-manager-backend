@@ -3,6 +3,7 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
+import * as path from 'path';
 
 export class TaskManagerBackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -18,7 +19,7 @@ export class TaskManagerBackendStack extends cdk.Stack {
     const taskFunction = new lambda.Function(this, 'TaskFunction', {
       runtime: lambda.Runtime.NODEJS_LATEST,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('../lambda'),
+      code: lambda.Code.fromAsset(path.resolve(__dirname, '..', 'lambda')),
       environment: {
         TABLE_NAME: taskTable.tableName,
       },

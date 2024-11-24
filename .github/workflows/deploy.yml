@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -21,10 +23,19 @@ jobs:
           npm install -g aws-cdk
           npm install
 
+      - name: List directory contents and move lambda
+        run: |
+          pwd
+          ls -R
+          if [ -d "lambda" ]; then
+            mv lambda ..
+          fi
+          ls -R ..
+
       - name: Deploy to AWS
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}  
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           cdk deploy --require-approval never
