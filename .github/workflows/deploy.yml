@@ -23,6 +23,11 @@ jobs:
           npm install -g aws-cdk
           npm install
 
+      - name: Install Lambda dependencies
+        run: |
+          cd lambda
+          npm install
+          
       - name: Verify Lambda directory
         run: |
           if [ ! -d "lambda" ]; then
