@@ -1,5 +1,9 @@
+# Ignore all JavaScript files by default
 *.js
 !jest.config.js
+# Explicitly include the Lambda handler file
+!lambda/index.js
+
 *.d.ts
 node_modules
 
@@ -8,4 +12,3 @@ node_modules
 cdk.out
 
 .idea/
-

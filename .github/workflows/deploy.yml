@@ -27,7 +27,7 @@ jobs:
         run: |
           cd lambda
           npm install
-          
+
       - name: Verify Lambda directory
         run: |
           if [ ! -d "lambda" ]; then
