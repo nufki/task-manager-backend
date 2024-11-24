@@ -13,9 +13,19 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
+# Howto deploy
+
+## Bootstrap the account (initial setup)
+````
+Bootstrapping is the process of setting up resources (like S3 buckets and IAM roles) in your AWS account that the AWS CDK requires to deploy your stacks. These resources are typically created once per account and region.
+When deploying a stack, the CDK uses the deploy-role (cdk-hnb659fds-deploy-role) to execute deployment actions. If the environment isn't bootstrapped, the required resources won't exist, leading to the error you see.
+`npx cdk bootstrap aws://YOUR-ACCOUNT-ID/eu-west-1`
+````
+
+## Run
+`npx cdk deploy`
 
 # Task API
-
 This project implements a CRUD API for managing tasks using AWS services (API Gateway, Lambda, and DynamoDB) and is deployed using AWS CDK.
 
 ## Project Structure

@@ -17,9 +17,9 @@ export class TaskManagerBackendStack extends cdk.Stack {
 
     // Create Lambda function
     const taskFunction = new lambda.Function(this, 'TaskFunction', {
-      runtime: lambda.Runtime.NODEJS_LATEST,
+      runtime: lambda.Runtime.NODEJS_18_X, // Ensure a supported runtime
       handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda')),
+      code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda')), // Deploy only the lambda folder
       environment: {
         TABLE_NAME: taskTable.tableName,
       },
