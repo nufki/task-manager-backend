@@ -23,14 +23,13 @@ jobs:
           npm install -g aws-cdk
           npm install
 
-      - name: List directory contents and move lambda
+      - name: Verify Lambda directory
         run: |
-          pwd
-          ls -R
-          if [ -d "lambda" ]; then
-            mv lambda ..
+          if [ ! -d "lambda" ]; then
+            echo "Lambda directory is missing!"
+            exit 1
           fi
-          ls -R ..
+          ls -R lambda
 
       - name: Deploy to AWS
         env:
