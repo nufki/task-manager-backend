@@ -31,7 +31,7 @@ jobs:
           fi
           ls -R lambda
 
-      - name: Deploy to AWS
+      - name: Deploy to configured AWS account
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
