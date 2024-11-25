@@ -31,6 +31,11 @@ export class TaskManagerBackendStack extends cdk.Stack {
     // Create API Gateway
     const api = new apigateway.RestApi(this, 'TaskApi', {
       restApiName: 'Task Service',
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS, // Allows requests from any origin
+        allowMethods: apigateway.Cors.ALL_METHODS, // Allows all HTTP methods
+        allowHeaders: ['Content-Type', 'Authorization'], // Specifies allowed headers
+      },
     });
 
     const tasks = api.root.addResource('tasks');

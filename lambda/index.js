@@ -7,11 +7,12 @@ const TABLE_NAME = process.env.TABLE_NAME;
 // Initialize the DynamoDB client
 const dynamodbClient = new DynamoDBClient();
 
+
 // CORS headers to include in each response
 const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE", // Temporary hack
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
 };
 
 exports.handler = async (event) => {

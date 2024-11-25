@@ -8,7 +8,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "postinstall": "npm run install:lambda",
+    "install:lambda": "cd lambda && npm install"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
