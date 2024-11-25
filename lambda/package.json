@@ -1,14 +1,19 @@
 {
-  "name": "task-manager-lambda",
+  "name": "lambda-task-manager",
   "version": "1.0.0",
-  "description": "AWS Lambda function for managing tasks",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"No tests specified\" && exit 0"
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "deploy": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.464.0",
-    "@aws-sdk/util-dynamodb": "^3.464.0",
+    "@aws-sdk/client-dynamodb": "^3.699.0",
+    "@aws-sdk/util-dynamodb": "^3.699.0",
     "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "typescript": "^5.2.0"
   }
 }

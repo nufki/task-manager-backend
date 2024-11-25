@@ -22,7 +22,7 @@ When deploying a stack, the CDK uses the deploy-role (cdk-hnb659fds-deploy-role)
 `npx cdk bootstrap aws://YOUR-ACCOUNT-ID/eu-west-1`
 ````
 
-## Run
+## Runbu
 `npx cdk deploy`
 
 # Task API

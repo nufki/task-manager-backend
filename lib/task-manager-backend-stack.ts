@@ -5,6 +5,7 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import * as path from 'path';
 
+// CDK stack definition
 export class TaskManagerBackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -17,9 +18,9 @@ export class TaskManagerBackendStack extends cdk.Stack {
 
     // Create Lambda function
     const taskFunction = new lambda.Function(this, 'TaskFunction', {
-      runtime: lambda.Runtime.NODEJS_18_X, // Ensure a supported runtime
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda')), // Deploy only the lambda folder
+      runtime: lambda.Runtime.NODEJS_18_X, // Use Node.js runtime
+      handler: 'index.handler', // Refers to the compiled JavaScript file's handler function
+      code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda', 'dist')), // Use compiled files
       environment: {
         TABLE_NAME: taskTable.tableName,
       },

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                      // Target modern JavaScript for compatibility with AWS Lambda
+    "module": "CommonJS",                    // Node.js uses CommonJS module resolution
+    "outDir": "dist",                        // Compiled output directory
+    "rootDir": "src",                        // Root directory for TypeScript files
+    "strict": true,                          // Enable strict type checking
+    "esModuleInterop": true,                 // Allow default imports for CommonJS modules
+    "forceConsistentCasingInFileNames": true,// Enforce case sensitivity
+    "skipLibCheck": true,                    // Skip type checking for declaration files
+    "resolveJsonModule": true                // Allow importing JSON files as modules
+  },
+  "include": ["src/**/*"],                   // Include all TypeScript files in `src` folder
+  "exclude": ["node_modules", "dist"]        // Exclude these folders
+}
