@@ -7,30 +7,38 @@ const TABLE_NAME = process.env.TABLE_NAME;
 // Initialize the DynamoDB client
 const dynamodbClient = new DynamoDBClient();
 
-
-// CORS headers to include in each response
+//CORS headers to include in each response
 const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+    "Access-Control-Allow-Origin": "*", // Consider restricting this to your frontend URL in production
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
 };
 
 exports.handler = async (event) => {
+    console.log("Request event:", event);
+
+    // Extract user claims from Cognito authorizer
+    const claims = event.requestContext.authorizer.claims;
+    const userId = claims.sub; // Cognito User ID
+    const userEmail = claims.email;
+
+    console.log(`Authenticated user: ${userId}, Email: ${userEmail}`);
+
     const { httpMethod, resource, pathParameters } = event;
 
     let response;
     switch (httpMethod) {
         case 'POST':
-            response = await createTask(JSON.parse(event.body));
+            response = await createTask(JSON.parse(event.body), userId);
             break;
         case 'GET':
-            response = resource === '/tasks/{id}' ? await getTask(pathParameters.id) : await getAllTasks();
+            response = resource === '/tasks/{id}' ? await getTask(pathParameters.id, userId) : await getAllTasks(userId);
             break;
         case 'PUT':
-            response = await updateTask(pathParameters.id, JSON.parse(event.body));
+            response = await updateTask(pathParameters.id, JSON.parse(event.body), userId);
             break;
         case 'DELETE':
-            response = await deleteTask(pathParameters.id);
+            response = await deleteTask(pathParameters.id, userId);
             break;
         default:
             response = { statusCode: 400, body: 'Unsupported HTTP method' };
@@ -41,13 +49,12 @@ exports.handler = async (event) => {
     return {
         ...response,
         headers,
-    };
+    }
 };
 
-async function createTask(task) {
-    if (!task.id) {
-        task.id = uuidv4(); // Generate a new UUID if no ID is provided
-    }
+async function createTask(task, userId) {
+    task.id = task.id || uuidv4();
+    task.userId = userId; // Associate task with the authenticated user
 
     const params = {
         TableName: TABLE_NAME,
@@ -60,34 +67,47 @@ async function createTask(task) {
     };
 }
 
-async function getAllTasks() {
+async function getAllTasks(userId) {
     const params = { TableName: TABLE_NAME };
     const result = await dynamodbClient.send(new ScanCommand(params));
     const items = result.Items.map(unmarshall);
+
+    // Filter tasks by userId
+    const userTasks = items.filter(item => item.userId === userId);
     return {
         statusCode: 200,
-        body: JSON.stringify(items),
+        body: JSON.stringify(userTasks),
     };
 }
 
-async function getTask(id) {
+async function getTask(id, userId) {
     const params = {
         TableName: TABLE_NAME,
         Key: marshall({ id }),
     };
     const result = await dynamodbClient.send(new GetItemCommand(params));
-    return result.Item
-        ? {
+    const item = result.Item ? unmarshall(result.Item) : null;
+
+    // Ensure the task belongs to the authenticated user
+    if (item && item.userId === userId) {
+        return {
             statusCode: 200,
-            body: JSON.stringify(unmarshall(result.Item)),
-        }
-        : {
-            statusCode: 404,
-            body: 'Task not found',
+            body: JSON.stringify(item),
         };
+    } else {
+        return {
+            statusCode: 404,
+            body: 'Task not found or access denied',
+        };
+    }
 }
 
-async function updateTask(id, task) {
+async function updateTask(id, task, userId) {
+    const existingTask = await getTask(id, userId);
+    if (existingTask.statusCode === 404) {
+        return existingTask; // Return the 404 response if the task doesn't exist or access is denied
+    }
+
     const params = {
         TableName: TABLE_NAME,
         Key: marshall({ id }),
@@ -112,7 +132,12 @@ async function updateTask(id, task) {
     };
 }
 
-async function deleteTask(id) {
+async function deleteTask(id, userId) {
+    const existingTask = await getTask(id, userId);
+    if (existingTask.statusCode === 404) {
+        return existingTask; // Return the 404 response if the task doesn't exist or access is denied
+    }
+
     const params = {
         TableName: TABLE_NAME,
         Key: marshall({ id }),
