@@ -8,11 +8,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk",
-    "postinstall": "npm run install:lambda",
-    "install:lambda": "cd lambda && npm install"
+    "cdk": "cdk"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.146",
     "@types/jest": "^29.5.14",
     "@types/node": "22.7.9",
     "aws-cdk": "2.170.0",
@@ -22,7 +21,10 @@
     "typescript": "~5.6.3"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.699.0",
+    "@aws-sdk/util-dynamodb": "^3.699.0",
     "aws-cdk-lib": "2.170.0",
-    "constructs": "^10.0.0"
+    "constructs": "^10.0.0",
+    "uuid": "^10.0.0"
   }
 }

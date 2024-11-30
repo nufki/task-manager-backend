@@ -1,10 +1,11 @@
-import * as cdk from 'aws-cdk-lib';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import { Construct } from 'constructs';
 import * as path from 'path';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import {NodejsFunction} from "aws-cdk-lib/aws-lambda-nodejs";
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 
 export class TaskManagerBackendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -16,11 +17,10 @@ export class TaskManagerBackendStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
     });
 
-    // Lambda Function
-    const taskFunction = new lambda.Function(this, 'TaskFunction', {
+    const taskFunction = new NodejsFunction(this, 'TaskFunction', {
+      entry: 'lambdas/task-manager/index.ts', // Path to your Lambda function code
+      handler: 'handler',
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(__dirname, '..', 'lambda')),
       environment: {
         TABLE_NAME: taskTable.tableName,
       },
@@ -37,7 +37,8 @@ export class TaskManagerBackendStack extends cdk.Stack {
         emailStyle: cognito.VerificationEmailStyle.CODE,
       },
       signInAliases: {
-        email: true
+        email: true,
+        username: true
       },
     });
 

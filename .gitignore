@@ -2,7 +2,7 @@
 *.js
 !jest.config.js
 # Explicitly include the Lambda handler file
-!lambda/index.js
+!lambdas/index.js
 
 *.d.ts
 node_modules
