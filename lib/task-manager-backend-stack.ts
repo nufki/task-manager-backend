@@ -17,6 +17,7 @@ export class TaskManagerBackendStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
     });
 
+    // Create Task Manager Lambda
     const taskFunction = new NodejsFunction(this, 'TaskFunction', {
       entry: 'lambdas/task-manager/index.ts', // Path to your Lambda function code
       handler: 'handler',

@@ -23,19 +23,6 @@ jobs:
           npm install -g aws-cdk
           npm install
 
-      - name: Install Lambda dependencies
-        run: |
-          cd lambda
-          npm install
-
-      - name: Verify Lambda directory
-        run: |
-          if [ ! -d "lambda" ]; then
-            echo "Lambda directory is missing!"
-            exit 1
-          fi
-          ls -R lambda
-
       - name: Deploy to configured AWS account
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}

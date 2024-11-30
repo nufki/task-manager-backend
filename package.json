@@ -2,7 +2,7 @@
   "name": "task-manager-backend",
   "version": "0.1.0",
   "bin": {
-    "task-manager-backend": "bin/task-manager-backend.js"
+    "task-manager-backend": "bin/task-manager-backend.ts"
   },
   "scripts": {
     "build": "tsc",
