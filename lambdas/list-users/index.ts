@@ -24,14 +24,16 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             ...(searchUsername && { Filter: `username ^= "${searchUsername}"` }),
         });
 
-        var response = await cognitoClient.send(command);
+        const response = await cognitoClient.send(command);
 
+        // Extract only usernames from the response
+        const usernames = response.Users?.map(user => user.Username) || [];
 
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({
-                users: response.Users,
+                users: usernames,
                 nextToken: response.PaginationToken,
             }),
         };

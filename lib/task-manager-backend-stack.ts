@@ -53,7 +53,7 @@ export class TaskManagerBackendStack extends cdk.Stack {
         /******************************************************
         /* Add Task API
         /******************************************************/
-        
+
         // Create Task Manager lambda function
         const taskFunction = new NodejsFunction(this, 'TaskFunction', {
                 entry: 'lambdas/task-manager/index.ts',

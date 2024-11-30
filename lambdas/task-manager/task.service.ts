@@ -27,7 +27,8 @@ export async function createTask(task: Partial<Task>, cognitoUserId: string) {
         description: task.description || "",
         status: task.status || TaskStatus.InProgress,
         priority: task.priority || TaskPriority.Medium,
-        dueDate: task.dueDate || new Date()
+        dueDate: task.dueDate || new Date(),
+        assignedUser: task.assignedUser
     };
 
     const params = {
@@ -74,7 +75,7 @@ export async function updateTask(id: string, updates: Partial<Task>) {
         TableName: TABLE_NAME,
         Key: marshall({ id }),
         UpdateExpression:
-            "set #name = :name, description = :description, #status = :status, priority = :priority, dueDate = :dueDate",
+            "set #name = :name, description = :description, #status = :status, priority = :priority, dueDate = :dueDate, assignedUser = :assignedUser",
         ExpressionAttributeNames: {
             "#name": "name",
             "#status": "status",
@@ -85,6 +86,7 @@ export async function updateTask(id: string, updates: Partial<Task>) {
             ":status": updates.status,
             ":priority": updates.priority,
             ":dueDate": updates.dueDate,
+            ":assignedUser": updates.assignedUser,
         }),
         ReturnValues: ReturnValue.ALL_NEW,
     };
