@@ -1,5 +1,5 @@
 
-import { APIGatewayProxyHandler } from "aws-lambda";
+import {APIGatewayEvent, APIGatewayProxyHandler} from "aws-lambda";
 import { createTask, getAllTasks, getTask, updateTask, deleteTask } from "./task.service";
 
 const headers = {
@@ -8,7 +8,7 @@ const headers = {
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
 };
 
-export const handler: APIGatewayProxyHandler = async (event) => {
+export const handler: APIGatewayProxyHandler = async (event:APIGatewayEvent) => {
     const { httpMethod, resource, pathParameters, body } = event;
     const cognitoUserId = event.requestContext.authorizer?.claims?.sub || "";
 
@@ -16,7 +16,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         let response;
         switch (httpMethod) {
             case "POST":
-                response = await createTask(JSON.parse(body || "{}"), cognitoUserId);
+                console.log("Received body:", body);
+                const td = JSON.parse(body || "{}");
+                response = await createTask(td, cognitoUserId);
                 break;
             case "GET":
                 response =

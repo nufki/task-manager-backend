@@ -1,4 +1,4 @@
-# Task API
+# Task manager backend
 This is the backend part of the simple task manager application.
 At present, the task manager allows you to create a new task (name, description) and give it a priority, a status, a due date and assigned it to another user to process
 This project implements a CRUD API for managing tasks using AWS services (API Gateway, Lambda, DynamoDB and Cognito) and is deployed using AWS CDK.
@@ -10,7 +10,6 @@ This is a silly app that just demonstrates how to develop AWS cloud native appli
 commercially used by any means. It shows how easy a serverless applications can be developed that is deployed 
 and ready to be used by any frontend.
 Also, it can serve as a good starting base to develop new applications
-
 
 ## Deployment
 This project is automatically deployed using GitHub Actions when changes are pushed to the main branch. 
@@ -53,6 +52,10 @@ To run tests: `npm test`
 
 # This project was created through:
 `cdk init app --language=typescript`
+
+More documentation on CDK:
+https://www.npmjs.com/package/aws-cdk
+
 
 This is a blank project for CDK development with TypeScript.
 [README.md](../../rch/task-manager-backend/README.md)
