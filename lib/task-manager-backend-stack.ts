@@ -32,7 +32,14 @@ export class TaskManagerBackendStack extends cdk.Stack {
             },
         });
 
-        const userPoolClient = new cognito.UserPoolClient(this, 'TaskManagerUserPoolClient', {
+        // App Client for Web App
+        const webAppClient = new cognito.UserPoolClient(this, 'WebAppClient', {
+            userPool,
+            generateSecret: false,
+        });
+
+        // App Client for Flutter App
+        const flutterAppClient = new cognito.UserPoolClient(this, 'FlutterAppClient', {
             userPool,
             generateSecret: false,
         });
@@ -43,10 +50,16 @@ export class TaskManagerBackendStack extends cdk.Stack {
             description: 'The ID of the Cognito User Pool',
         });
 
-        // Output the User Pool Client ID
-        new cdk.CfnOutput(this, 'UserPoolClientId', {
-            value: userPoolClient.userPoolClientId,
-            description: 'Client ID for Cognito User Pool (for frontend integration)',
+        // Output the Flutter App Client ID
+        new cdk.CfnOutput(this, 'FlutterAppClientId', {
+            value: flutterAppClient.userPoolClientId,
+            description: 'Client ID for the Flutter App',
+        });
+
+        // Output the Web App Client ID
+        new cdk.CfnOutput(this, 'WebAppClientId', {
+            value: webAppClient.userPoolClientId,
+            description: 'Client ID for the Web App',
         });
 
 
@@ -112,7 +125,7 @@ export class TaskManagerBackendStack extends cdk.Stack {
 
 
        /******************************************************
-       /* dd ListUsers API resources:
+       /* Add ListUsers API resources:
        /******************************************************/
 
         // Create List user lambda function
@@ -155,6 +168,11 @@ export class TaskManagerBackendStack extends cdk.Stack {
         users.addMethod('GET', new apigateway.LambdaIntegration(listUserFunction), {
             authorizer: userAuthorizer,
             authorizationType: apigateway.AuthorizationType.COGNITO,
+            requestParameters: {
+                'method.request.querystring.searchUsername': true, // Define searchUsername query parameter
+                'method.request.querystring.Limit': false, // Optional Limit query parameter
+                'method.request.querystring.nextToken': false, // Optional nextToken for pagination
+            },
         });
     }
 }
