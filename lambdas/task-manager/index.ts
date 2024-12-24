@@ -21,10 +21,10 @@ export const handler: APIGatewayProxyHandler = async (event:APIGatewayEvent) => 
                 response = await createTask(td, cognitoUserId);
                 break;
             case "GET":
-                response =
-                    resource === "/tasks/{id}"
-                        ? await getTask(pathParameters?.id || "")
-                        : await getAllTasks();
+                const queryParams = event.queryStringParameters || {};
+                const limit = queryParams.limit ? parseInt(queryParams.limit, 10) : undefined;
+                const nextToken = queryParams.nextToken || undefined;
+                response = await getAllTasks(limit, nextToken);
                 break;
             case "PUT":
                 response = await updateTask(
