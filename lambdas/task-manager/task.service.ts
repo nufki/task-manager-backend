@@ -5,14 +5,19 @@ import {
     GetItemCommand,
     UpdateItemCommand,
     DeleteItemCommand,
-    ReturnValue
+    ReturnValue,
+    AttributeValue
 } from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { Task, TaskPriority, TaskStatus } from "./models";
+import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
+import {Task, TaskPriority, TaskStatus} from "./models";
 
 const TABLE_NAME = process.env.TABLE_NAME || "TaskTable";
 const dynamodbClient = new DynamoDBClient({});
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid";
+
+// Helper functions for Base64 encoding/decoding
+const base64Encode = (data: Record<string, any>) => Buffer.from(JSON.stringify(data)).toString("base64");
+const base64Decode = (token: string) => JSON.parse(Buffer.from(token, "base64").toString("utf-8"));
 
 
 export async function createTask(task: Partial<Task>, cognitoUserId: string) {
@@ -45,16 +50,30 @@ export async function createTask(task: Partial<Task>, cognitoUserId: string) {
     };
 }
 
-export async function getAllTasks() {
-    console.log('Fetching all tasks...');
-    const params = { TableName: TABLE_NAME };
+export async function getAllTasks(limit?: number, nextToken?: string) {
+    console.log('Fetching all tasks with pagination...');
+
+    const params: any = {
+        TableName: TABLE_NAME,
+        Limit: limit,
+        ExclusiveStartKey: nextToken ? base64Decode(nextToken) : undefined,
+    };
+    
     const result = await dynamodbClient.send(new ScanCommand(params));
+
+    // Unmarshall the items
     const items = result.Items ? result.Items.map((item) => unmarshall(item)) : [];
+
+    // Return items and the PaginationToken for the next page
     return {
         statusCode: 200,
-        body: JSON.stringify(items),
+        body: JSON.stringify({
+            items,
+            nextToken: result.LastEvaluatedKey ? base64Encode(result.LastEvaluatedKey) : null,
+        }),
     };
 }
+
 
 export async function getTask(id: string) {
     console.log('Fetching task with id:', id);

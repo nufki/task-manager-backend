@@ -105,6 +105,10 @@ export class TaskManagerBackendStack extends cdk.Stack {
         tasks.addMethod('GET', new apigateway.LambdaIntegration(taskFunction), {
             authorizer: taskAuthorizer,
             authorizationType: apigateway.AuthorizationType.COGNITO,
+            requestParameters: {
+                'method.request.querystring.Limit': false, // Optional Limit query parameter
+                'method.request.querystring.nextToken': false, // Optional nextToken for pagination
+            },
         });
 
         singleTask.addMethod('GET', new apigateway.LambdaIntegration(taskFunction), {
