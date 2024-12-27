@@ -16,6 +16,14 @@ export class TaskManagerBackendStack extends cdk.Stack {
             partitionKey: {name: 'id', type: dynamodb.AttributeType.STRING},
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
         });
+        // @TODO Merge to this generic construct
+        // const table = new dynamodb.Table(this, 'MainTable', {
+        //     partitionKey: { name: 'PK', type: dynamodb.AttributeType.STRING },
+        //     sortKey: { name: 'SK', type: dynamodb.AttributeType.STRING },
+        //     billingMode: dynamodb.BillingMode.PAY_PER_REQUEST, // ! Only initially, until we have a clear baseline
+        //     timeToLiveAttribute: '_ttl',
+        // });
+
 
 
         // Cognito User Pool
